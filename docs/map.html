@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Create the Gapminder dataset – datasci350-quiz02</title>
+<title>Interactive Map – datasci350-quiz02</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,7 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -103,6 +103,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script type="text/javascript">
+window.PlotlyConfig = {MathJaxConfig: 'local'};
+if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+</script>
+<script type="module">import "https://cdn.plot.ly/plotly-3.0.0.min"</script>
+
 
 
 <link rel="stylesheet" href="styles.css">
@@ -142,7 +151,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Country Analysis</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./map.html"> 
+    <a class="nav-link active" href="./map.html" aria-current="page"> 
 <span class="menu-text">Interactive Map</span></a>
   </li>  
   <li class="nav-item">
@@ -160,15 +169,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#interactive-map" id="toc-interactive-map" class="nav-link active" data-scroll-target="#interactive-map">Interactive Map</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Create the Gapminder dataset</h1>
+<h1 class="title">Interactive Map</h1>
 </div>
 
 
@@ -185,41 +200,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="cell-2" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import necessary libraries</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gapminder <span class="im">import</span> gapminder</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Rename 'lifeExp' to 'life_expectancy' and 'gdpPercap' to 'gdp_per_capita'</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>gapminder <span class="op">=</span> gapminder.rename(columns<span class="op">=</span>{<span class="st">'lifeExp'</span>: <span class="st">'life_expectancy'</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">'pop'</span>: <span class="st">'population_millions'</span>, </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">'gdpPercap'</span>: <span class="st">'gdp_per_capita'</span>})</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert population to millions</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>gapminder[<span class="st">'population_millions'</span>] <span class="op">=</span> gapminder[<span class="st">'population_millions'</span>] <span class="op">/</span> <span class="dv">1_000_000</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new pandas DataFrame from the modified gapminder data</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>gapminder_df <span class="op">=</span> pd.DataFrame(gapminder)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the DataFrame as a CSV file</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>gapminder_df.to_csv(<span class="st">'gapminder.csv'</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<section id="interactive-map" class="level2">
+<h2 class="anchored" data-anchor-id="interactive-map">Interactive Map</h2>
+<div id="ab41c0bf" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"gapminder.csv"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>latest <span class="op">=</span> df[<span class="st">"year"</span>].<span class="bu">max</span>()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df_latest <span class="op">=</span> df[df[<span class="st">"year"</span>] <span class="op">==</span> latest]</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.scatter_geo(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    df_latest,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    locations<span class="op">=</span><span class="st">"country"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    locationmode<span class="op">=</span><span class="st">"country names"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="st">"population_millions"</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">"life_expectancy"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    hover_name<span class="op">=</span><span class="st">"country"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="ss">f"Life Expectancy (color) and Population (size) — </span><span class="sc">{</span>latest<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the first 3 rows of the DataFrame</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gapminder_df.head(<span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       country continent  year  life_expectancy  population_millions  \
-0  Afghanistan      Asia  1952           28.801             8.425333   
-1  Afghanistan      Asia  1957           30.332             9.240934   
-2  Afghanistan      Asia  1962           31.997            10.267083   
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.0.0.min.js"></script>                <div id="8fa1f516-fab9-4797-aea9-6147f5f5202c" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("8fa1f516-fab9-4797-aea9-6147f5f5202c")) {                    Plotly.newPlot(                        "8fa1f516-fab9-4797-aea9-6147f5f5202c",                        [{"geo":"geo","hovertemplate":"\u003cb\u003e%{hovertext}\u003c\u002fb\u003e\u003cbr\u003e\u003cbr\u003epopulation_millions=%{marker.size}\u003cbr\u003ecountry=%{location}\u003cbr\u003elife_expectancy=%{marker.color}\u003cextra\u003e\u003c\u002fextra\u003e","hovertext":["Afghanistan","Albania","Algeria","Angola","Argentina","Australia","Austria","Bahrain","Bangladesh","Belgium","Benin","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo, Dem. Rep.","Congo, Rep.","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Czech Republic","Denmark","Djibouti","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Ethiopia","Finland","France","Gabon","Gambia","Germany","Ghana","Greece","Guatemala","Guinea","Guinea-Bissau","Haiti","Honduras","Hong Kong, China","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kenya","Korea, Dem. Rep.","Korea, Rep.","Kuwait","Lebanon","Lesotho","Liberia","Libya","Madagascar","Malawi","Malaysia","Mali","Mauritania","Mauritius","Mexico","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Panama","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Reunion","Romania","Rwanda","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Sierra Leone","Singapore","Slovak Republic","Slovenia","Somalia","South Africa","Spain","Sri Lanka","Sudan","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tanzania","Thailand","Togo","Trinidad and Tobago","Tunisia","Turkey","Uganda","United Kingdom","United States","Uruguay","Venezuela","Vietnam","West Bank and Gaza","Yemen, Rep.","Zambia","Zimbabwe"],"legendgroup":"","locationmode":"country names","locations":["Afghanistan","Albania","Algeria","Angola","Argentina","Australia","Austria","Bahrain","Bangladesh","Belgium","Benin","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo, Dem. Rep.","Congo, Rep.","Costa Rica","Cote d'Ivoire","Croatia","Cuba","Czech Republic","Denmark","Djibouti","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Ethiopia","Finland","France","Gabon","Gambia","Germany","Ghana","Greece","Guatemala","Guinea","Guinea-Bissau","Haiti","Honduras","Hong Kong, China","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kenya","Korea, Dem. Rep.","Korea, Rep.","Kuwait","Lebanon","Lesotho","Liberia","Libya","Madagascar","Malawi","Malaysia","Mali","Mauritania","Mauritius","Mexico","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Panama","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Reunion","Romania","Rwanda","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Sierra Leone","Singapore","Slovak Republic","Slovenia","Somalia","South Africa","Spain","Sri Lanka","Sudan","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tanzania","Thailand","Togo","Trinidad and Tobago","Tunisia","Turkey","Uganda","United Kingdom","United States","Uruguay","Venezuela","Vietnam","West Bank and Gaza","Yemen, Rep.","Zambia","Zimbabwe"],"marker":{"color":{"dtype":"f8","bdata":"RIts5\u002fvpRUBQjZduEhtTQCUGgZVDE1JAIbByaJFdRUAUrkfhetRSQNejcD0KT1RAkxgEVg71U0BxPQrXo+hSQIcW2c73A1BATmIQWDncU0B3vp8aL11MQPp+arx0Y1BASgwCK4e2UkB3vp8aL11JQClcj8L1GFJAuB6F61FAUkD2KFyPwiVKQArXo3A9ykhABoGVQ4vcTUDXo3A9CjdJQG8Sg8DKKVRAAiuHFtleRkAX2c73U1NJQAisHFpko1NAL90kBoE9UkA3iUFg5ThSQH0\u002fNV66SVBAQmDl0CI7R0Dwp8ZLN6lLQDVeukkMslNARIts5\u002fspSEAdWmQ73+9SQLbz\u002fdR4kVNAyXa+nxofU0Boke18P5VTQGiR7Xw\u002fZUtA16NwPQoPUkBWDi2ynb9SQBKDwMqh1VFA1XjpJjH4UUAnMQisHMpJQIXrUbgeBU1A8KfGSzd5SkB56SYxCNRTQDVeukkMKlRArkfhehReTEDTTWIQWLlNQESLbOf72VNAiUFg5dACTkD0\u002fdR46d5TQH9qvHSTkFFAN4lBYOUATECLbOf7qTFHQGiR7Xw\u002fdU5A6SYxCKyMUUBaZDvfT41UQBKDwMqhVVJAnMQgsHJwVEDpJjEIrCxQQJqZmZmZqVFABFYOLbK9UUD2KFyPwsVNQHE9CtejuFNASOF6FK4vVEBt5\u002fup8SJUQD81XrpJJFJAO99PjZemVEAK16NwPSJSQK5H4XoUDktAXrpJDALTUEAdWmQ736dTQBKDwMqhZVNAZDvfT43\u002fUUCyne+nxktFQBBYObTI1kZAsHJoke18UkBiEFg5tLhNQBBYObTIJkhAgZVDi2yPUkCyne+nxjtLQNEi2\u002fl+ClBAJQaBlUMzUkAUrkfhegxTQAisHFpks1BAmG4Sg8CiUkDRItv5fspRQNEi2\u002fl+CkVARrbz\u002fdQIT0CHFtnO93NKQBSuR+F65E9AVOOlm8TwU0CTGARWDg1UQKjGSzeJOVJA5dAi2\u002fluTEDLoUW2821HQAaBlUOLDFRAKVyPwvXoUkD0\u002fdR46V5QQO58PzVe4lJA46WbxCDwUUBt5\u002fup8dpRQHnpJjEI7FFAeekmMQjkUkCDwMqhRYZTQDm0yHa+r1NAPzVeukkcU0BYObTIdh5SQOXQItv5HkdAbxKDwMphUEB9PzVeujFSQA4tsp3vh09A46WbxCCAUkBiEFg5tEhFQJHtfD81\u002flNA30+Nl26qUkAlBoGVQ3tTQDEIrBxaFEhACKwcWmSrSEBOYhBYOTxUQNNNYhBYGVJAukkMAitHTUBYObTIds5DQH9qvHSTOFRAvp8aL91sVED+1HjpJolSQJqZmZmZmVNAGQRWDi1CSkCBlUOLbKdRQPYoXI\u002fCNU1AI9v5fmp0UUBQjZduEntSQH0\u002fNV668VFATDeJQWDFSUAzMzMzM9tTQHNoke18j1NAf2q8dJMYU0ArhxbZzm9SQA4tsp3vj1JAXrpJDAJbUkDTTWIQWFlPQP7UeOkmMUVAdZMYBFa+RUA="},"coloraxis":"coloraxis","size":{"dtype":"f8","bdata":"TfVk\u002ftHjP0Bq96sA380MQIFAZ9KmqkBAfIFZoUjXKEDDYz+LpSZEQEa1iCgmbzRA8pcW9UlmIED1g7pIoazmP6\u002fQB8tYzmJAJEil2NHIJEBNo8nFGCggQIiBrn0BPSJAm6p7ZHM1EkCkwW1t4Tn6P56ZYDhXwGdABAKdSZtKHUDUtmEUBKcsQFXZd0XwxyBAk25L5IJDLEAJbw9CQLIxQBTq6SPwsUBAzOzzGOV5EUCbHD7pRHokQJHUQsnkSDBAHZCEfbualEA3GsBbIB1GQAB0mC8vwOY\u002fb2OzI9UmUEDyzTY3pmcOQKbUJeMYiRBA2XiwxW4DMkC95erHJvkRQN2271F\u002f1SZA\u002fU\u002f+7h11JEABamrZWt8VQMprJXSXxN8\u002fCyqqfqWjIkCJeyx96IIrQLBYw0XuEFRATMYxkj3CG0BKuJBHcKPhPzgteNFXoBNA2A+xwcIgU0DcnbXbLvQUQDrObcK9ik5AX3mQniJH9z8nhA66hAP7P+t0IOupmVRAo1pEFJPfNkDS+8bXnmklQOXsndFWJSlAw2Fp4EflI0As8BXdeo33PyDxK9ZwASFANA9gkV\u002fvHUB\u002fbJIf8esbQFDj3vyG6SNARYKpZtZS0z+QLcvXlVmRQC\u002fdJAaB8WtAlxx3SgddUUC\u002f1qVG6H87QErOiT20bxBAWI\u002f7Vuu0GUAexTnq6BJNQCyBlNi1PQZAZtzUQPPdX0Aogc05eDYYQL3iqUcazkFAt2J\u002f2T1NN0ALmMCtu4VIQHSWWYRiCwRAvjEEAMdeD0DpnQq45xkAQBCRmnYxjQlA5Q6byMwlGEAoC19f6yozQLFqEOZ2pypApKmezD\u002fSOEBHWipvRxAoQJtattYXKQpALXsS2JwD9D\u002fjw+xl2yxbQJ1n7Es2\u002fgZAeJrMeFvp5T+lLEMc6+BAQMwKRbqf8zNAYRqGj4jhR0A3T3XIzXAAQB7cnbXb5jxAJqyNsROSMEAFTUusjHYQQCeh9IWQsxZAiqvKvivKKUAAGqVL\u002f+BgQH47iQj\u002fghJAWmPQCaGjCUC7l\u002fvkqChlQC7L12X47wlAgH9KlSirGkBAv+\u002ffvKw8QPtZLEXyxFZAIjmZuFVCQ0AHYtnMIUklQNcxrrg4ig9ASUikbfyJ6T9V3SObq0Y2QPyohv2euCFAAvT7\u002fs2LyT87p1mg3Zk7QF\u002fRrdf0iChAhXe5iO9MJEA3+pgPCJQYQB2Txf1HNhJAEJTb9j3KFUBQNuUK7xIAQK1LjdDPPCJAPITx07j\u002fRUBHrptSXjlEQF4SZ0XUYDRAZoaNsn4lRUBCWmPQCSHyP5qYLsTqDyJAdXedDfk3HkCdg2dCk1AzQJfjFYieLDdAUps4ud8RQ0BUkJ+NXERQQNU9srlqzhZATRJLyt3n8D+7DtWUZI0kQPImv0UnylFAxk0NNJ8rPUDL9EvEW2NOQMbCEDk90nJA\u002frloyHiUC0DGNqlorBU6QDP60XDKUFVAj+Gxn8USEEAsKAzKNDY2QLxXrUz4fSdAN8KiIk6fKEA="},"sizemode":"area","sizeref":3.29670774,"symbol":"circle"},"mode":"markers","name":"","showlegend":false,"type":"scattergeo"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}},"geo":{"domain":{"x":[0.0,1.0],"y":[0.0,1.0]},"center":{}},"coloraxis":{"colorbar":{"title":{"text":"life_expectancy"}},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"legend":{"tracegroupgap":0,"itemsizing":"constant"},"title":{"text":"Life Expectancy (color) and Population (size) \u2014 2007"}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('8fa1f516-fab9-4797-aea9-6147f5f5202c');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
 
-   gdp_per_capita  
-0      779.445314  
-1      820.853030  
-2      853.100710  </code></pre>
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
 </div>
 </div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

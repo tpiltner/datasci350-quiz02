@@ -1,0 +1,28 @@
+---
+title: "Interactive Map"
+---
+
+## Interactive Map
+
+```{python}
+import pandas as pd
+import plotly.express as px
+
+df = pd.read_csv("gapminder.csv")
+
+latest = df["year"].max()
+df_latest = df[df["year"] == latest]
+
+fig = px.scatter_geo(
+    df_latest,
+    locations="country",
+    locationmode="country names",
+    size="population_millions",
+    color="life_expectancy",
+    hover_name="country",
+    title=f"Life Expectancy (color) and Population (size) — {latest}"
+)
+
+fig.show()
+
+``` 

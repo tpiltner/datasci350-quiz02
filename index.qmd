@@ -13,3 +13,4 @@ The Gapminder dataset contains country-level data on life expectancy, GDP per ca
 - [Life Expectancy and GDP per Capita](life-gdp.qmd)
 - [Life Expectancy and Population](life-population.qmd)
 - [Country Analysis](country.qmd)
+- [Interactive Map](map.qmd)

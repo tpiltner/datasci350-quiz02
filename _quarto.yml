@@ -14,13 +14,15 @@ website:
         text: Life Expectancy and Population
       - href: country.qmd
         text: Country Analysis
+      - href: map.qmd
+        text: Interactive Map
       - href: about.qmd
         text: About
 
 format:
   html:
     theme:
-      - quartz
+      - spacelab
       - brand
     css: styles.css
     toc: true
