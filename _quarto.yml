@@ -1,0 +1,29 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "datasci350-quiz02"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: life-gdp.qmd
+        text: Life Expectancy and GDP per Capita
+      - href: life-population.qmd
+        text: Life Expectancy and Population
+      - href: country.qmd
+        text: Country Analysis
+      - href: about.qmd
+        text: About
+
+format:
+  html:
+    theme:
+      - quartz
+      - brand
+    css: styles.css
+    toc: true
+
+
+

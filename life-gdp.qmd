@@ -1,0 +1,35 @@
+---
+title: "Life Expectancy and GDP per Capita"
+---
+
+## Introduction
+
+This page explores how life expectancy changes as GDP per capita increases, using the Gapminder dataset.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv("gapminder.csv")
+
+# Check column names
+df.columns
+
+``` 
+
+
+```{python}
+# Scatter plot: GDP per capita vs Life expectancy
+plt.figure()
+plt.scatter(df["gdp_per_capita"], df["life_expectancy"])
+plt.xlabel("GDP per Capita")
+plt.ylabel("Life Expectancy")
+plt.title("Life Expectancy vs GDP per Capita")
+plt.show()
+
+``` 
+
+## Interpretation
+
+The scatterplot suggests that as GDP per capita increases, life expectancy tends to increase as well. The relationship flattens for higher-income countries. This indicates diminishing returns at higher GDP levels.

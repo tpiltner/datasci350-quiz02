@@ -1,0 +1,34 @@
+---
+title: "Life Expectancy and Population"
+---
+
+## Introduction
+
+This page explores how life expectancy relates to population size in the Gapminder dataset.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv("gapminder.csv")
+
+# Check column names
+df.columns
+
+``` 
+
+```{python}
+# Scatter plot: Population vs Life expectancy
+plt.figure()
+plt.scatter(df["population_millions"], df["life_expectancy"])
+plt.xlabel("Population (millions)")
+plt.ylabel("Life Expectancy")
+plt.title("Life Expectancy vs Population")
+plt.show()
+
+``` 
+
+## Interpretation
+
+The scatterplot shows that there isn't a strong linear relationship between population size and life expectancy. Unlike GDP per capita, population alone does not appear to strongly predict life expectancy.

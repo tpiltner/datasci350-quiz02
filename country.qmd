@@ -1,0 +1,55 @@
+---
+title: "Country Analysis"
+---
+
+## Introduction
+
+This page explores how life expectancy, GDP per capita, and population change over time for a single country in the Gapminder dataset.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv("gapminder.csv")
+
+# Check column names
+df.columns
+
+``` 
+
+```{python}
+# choosing US as country
+country_name = "United States"
+
+country_df = df[df["country"] == country_name].sort_values("year")
+
+country_df.head()
+
+plt.figure(figsize=(10, 8))
+
+# Life expectancy
+plt.subplot(3, 1, 1)
+plt.plot(country_df["year"], country_df["life_expectancy"])
+plt.title(f"{country_name}: Trends Over Time")
+plt.ylabel("Life Expectancy")
+
+# GDP per capita
+plt.subplot(3, 1, 2)
+plt.plot(country_df["year"], country_df["gdp_per_capita"])
+plt.ylabel("GDP per Capita")
+
+# Population
+plt.subplot(3, 1, 3)
+plt.plot(country_df["year"], country_df["population_millions"])
+plt.xlabel("Year")
+plt.ylabel("Population (millions)")
+
+plt.tight_layout()
+plt.show()
+
+``` 
+
+## Interpretation
+
+For the United States, life expectancy generally increases over time, GDP per capita significantly rises, and population steadily increases as well. This indicates economic and health improvements over time. 
